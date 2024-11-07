@@ -92,7 +92,7 @@ def transcribir_audios_en_carpeta(carpeta, duracion_segmento):
 
 def leer_json_a_diccionario(ruta_archivo):
     """
-    Lee un archivo JSON y lo convierte en un diccionario.
+    Lee un archivo JSON y lo convierte en un diccionario
     """
     try:
         with open(ruta_archivo, 'r', encoding='utf-8') as file:
