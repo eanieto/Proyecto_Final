@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador Neo4j</title>
+</head>
+<body>
+    <h1>Buscador Neo4j</h1>
+    <form method="POST">
+        <input type="number" name="query" placeholder="Escribe tu consulta..." required>
+        <button type="submit">Buscar</button>
+    </form>
+    <h2>Resultados:</h2>
+    <ul>
+        {% for result in results %}
+            <li>{{ result }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

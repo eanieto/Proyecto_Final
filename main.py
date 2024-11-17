@@ -2,7 +2,7 @@ from read_audio_dask import transcribir_audios_en_carpeta
 from load_mongo import inserta_mongo_db
 from transform import calcular_anio
 from read_audio_dask import leer_json_a_diccionario
-
+import os
 
 ##Parametros de inicio
 carpeta_audios = "C:/Users/Usuario/Documents/Maestria/BigData/Proyecto_Final/audio/"
@@ -15,9 +15,13 @@ RUTA_SIMILITUD = "C:/Users/Usuario/Documents/Maestria/BigData/Proyecto_Final/sim
 
 def main():
     print("Inicio de programa:\n")
+
+    audios = [os.path.join(carpeta_audios, archivo) for archivo in os.listdir(carpeta_audios) if archivo.endswith(('.wav', '.mp3'))]
+
+    for i in audios:
+        dic_audios = transcribir_audios_en_carpeta(i,DURACION_SEGMENTO)
+        inserta_mongo_db(CLIENTE_MONGODB,DB_MONGO,COLLECTION_MONGO,dic_audios)
     
-    #dic_audios = transcribir_audios_en_carpeta(carpeta_audios,DURACION_SEGMENTO)
-    #inserta_mongo_db(CLIENTE_MONGODB,DB_MONGO,COLLECTION_MONGO,dic_audios)
     opcion = input("Desea cargar la base de similitud? Y/N")
 
     if opcion == 'Y':

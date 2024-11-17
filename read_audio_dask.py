@@ -69,25 +69,26 @@ def transcribir_audios_en_carpeta(carpeta, duracion_segmento):
     """
     trasncripcion = []
     
-    audios = [os.path.join(carpeta, archivo) for archivo in os.listdir(carpeta) if archivo.endswith(('.wav', '.mp3'))]
-    
-    for ruta_audio in audios:
-        nombre_archivo = os.path.basename(ruta_audio)
+    #audios = [os.path.join(carpeta, archivo) for archivo in os.listdir(carpeta) if archivo.endswith(('.wav', '.mp3'))]
+    #print(audios)
 
-        print(f"Procesando {nombre_archivo}...")
-        texto_extraido = transcribir_audio_en_paralelo_dask(ruta_audio, duracion_segmento)
+    #for ruta_audio in audios:
+    nombre_archivo = os.path.basename(carpeta)
 
-        codigo = nombre_archivo.split('.')[0]
-        anio = calcular_anio(codigo)
-        tipo = tipo_providencia(codigo)
+    print(f"Procesando {nombre_archivo}...")
+    texto_extraido = transcribir_audio_en_paralelo_dask(carpeta, duracion_segmento)
 
-        #print(f"Transcripción de {ruta_audio}:\n{texto_extraido}\n")
-        trasncripcion.append({
-            "providencia" : nombre_archivo,
-            "tipo": tipo,
-            "texto_audio": texto_extraido,
-            "anio": anio
-        })
+    codigo = nombre_archivo.split('.')[0]
+    anio = calcular_anio(codigo)
+    tipo = tipo_providencia(codigo)
+
+    #print(f"Transcripción de {ruta_audio}:\n{texto_extraido}\n")
+    trasncripcion.append({
+        "providencia" : nombre_archivo,
+        "tipo": tipo,
+        "texto_audio": texto_extraido,
+        "anio": anio
+       })
     return trasncripcion
 
 def leer_json_a_diccionario(ruta_archivo):
