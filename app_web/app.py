@@ -1,50 +1,59 @@
 from flask import Flask, render_template, request
-from neo4j import GraphDatabase
+from pymongo import MongoClient
 
-# Configuración de la conexión a Neo4j
-uri = "neo4j+s://2ab2a2fc.databases.neo4j.io"  # Cambia esto por tu URI
-user = "neo4j"
-password = "N60xwacXrv3nytMqDRy--YkQHDonDOVXT_UCuzJJvhE"
-
-# Crear instancia del controlador de Neo4j
-driver = GraphDatabase.driver(uri, auth=(user, password))
-
-# Crear aplicación Flask
 app = Flask(__name__)
 
-# Ruta principal
-@app.route("/", methods=["GET", "POST"])
-def index():
-    results = []
-    if request.method == "POST":
-        query = request.form.get("query")  # Captura la consulta del usuario
-        if query:
-            results = search_neo4j(query)  # Busca en la base de datos
-    return render_template("index.html", results=results)
+# Configuración de conexión a MongoDB
+client = MongoClient("mongodb+srv://usr_edwin:eanieto93@bigdata2024.7s5ee.mongodb.net/?retryWrites=true&w=majority&appName=BigData2024")
+db = client['BigData2024']
+collection = db['RelatoriaAudios']
 
-# Función para buscar en Neo4j
-def search_neo4j(similitud):
+@app.route('/', methods=['GET', 'POST'])
+def search():
     results = []
-    similitud =  int(similitud)
-    cypher_query = (
-        "MATCH (p:Providencia)-[s:SIMILAR_A]-(p2:Providencia) "
-        "WHERE s.similitud > $similitud "
-        "RETURN p, s, p2"
+    per_page = 10  # Número de resultados por página
+    page = int(request.args.get('page', 1))  # Página actual, por defecto es 1
+
+    if request.method == 'POST':
+        query = {}
+        field1 = request.form.get('providencia', '').strip()
+        field2 = request.form.get('tipo', '').strip()
+        field3 = request.form.get('anio', '').strip()
+        field4 = request.form.get('texto_audio', '').strip()
+
+        if field1:
+            query['providencia'] = {'$regex': field1, '$options': 'i'}
+        if field2:
+            query['tipo'] = {'$regex': field2, '$options': 'i'}
+        if field3:
+            try:
+                query['anio'] = int(field3)
+            except ValueError:
+                pass
+        if field4:
+            query['texto_audio'] = {'$regex': field4, '$options': 'i'}
+
+        # Calcular resultados con paginación
+        total_results = collection.count_documents(query)  # Total de documentos que cumplen el filtro
+        total_pages = (total_results + per_page - 1) // per_page  # Redondear hacia arriba
+
+        # Obtener solo los resultados de la página actual
+        results = list(
+            collection.find(query)
+            .skip((page - 1) * per_page)
+            .limit(per_page)
+        )
+    else:
+        total_pages = 0
+        total_results = 0
+
+    return render_template(
+        'search.html',
+        results=results,
+        page=page,
+        total_pages=total_pages,
+        total_results=total_results,
     )
-    with driver.session() as session:
-        nodes = session.run(cypher_query, similitud=similitud)
-        for record in nodes:
-            results.append({
-                "p": record["p"],
-                "s": record["s"],
-                "p2": record["p2"]
-            })
-    return results
 
-# Cerrar conexión al finalizar
-@app.teardown_appcontext
-def close_driver(exception):
-    driver.close()
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)

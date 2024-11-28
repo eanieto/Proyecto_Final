@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda en MongoDB</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Relatoria</h1>
+        <form method="POST" class="mt-4">
+            <div class="mb-3">
+                <label for="providencia" class="form-label">Nombre de la providencia</label>
+                <input type="text" class="form-control" id="providencia" name="providencia" placeholder="Ingrese el Nombre de la Providencia">
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Busqueda por tipo providencia">
+            </div>
+            <div class="mb-3">
+                <label for="anio" class="form-label">Año</label>
+                <input type="number" class="form-control" id="anio" name="anio" placeholder="Año">
+            </div>
+            <div class="mb-3">
+                <label for="texto_audio" class="form-label">Búsqueda por texto</label>
+                <input type="text" class="form-control" id="texto_audio" name="texto_audio" placeholder="Busqueda por texto de providencia">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Buscar</button>
+        </form>
+
+        {% if results %}
+        <div class="mt-5">
+            <h3>Resultados ({{ total_results }} encontrados):</h3>
+            <div class="row">
+                {% for result in results %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Resultado {{ loop.index }}</h5>
+                            <p><strong>Providencia:</strong> {{ result.providencia or 'No disponible' }}</p>
+                            <p><strong>Tipo:</strong> {{ result.tipo or 'No disponible' }}</p>
+                            <p><strong>Año:</strong> {{ result.anio or 'No disponible' }}</p>
+                            <p><strong>Texto:</strong> {{ result.texto_audio or 'No disponible' }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Controles de paginación -->
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page - 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% for p in range(1, total_pages + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if page < total_pages %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page + 1 }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% elif results is not none %}
+        <div class="alert alert-warning mt-5">No se encontraron resultados.</div>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
