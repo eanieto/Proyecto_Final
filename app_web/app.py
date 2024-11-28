@@ -81,7 +81,7 @@ def search():
 def providencia_detail(providencia):
     # Realiza la consulta a Neo4j usando el valor de providencia
     neo4j_results = get_neo4j_data(providencia)
-    
+    print(neo4j_results)
     return render_template('providencia_detail.html', providencia=providencia, results=neo4j_results)
 
 

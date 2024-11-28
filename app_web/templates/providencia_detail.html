@@ -16,7 +16,7 @@
             <ul class="list-group">
                 {% for item in results %}
                     <li class="list-group-item">
-                        <strong>Nombre:</strong> {{ item['n']['name'] }}<br>
+                        <strong>Nombre:</strong> {{ item['properties']['similitud'] }}<br>
                         <!-- Puedes agregar más detalles según la estructura de tus nodos en Neo4j -->
                     </li>
                 {% endfor %}
