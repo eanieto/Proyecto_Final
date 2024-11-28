@@ -84,7 +84,7 @@ def transcribir_audios_en_carpeta(carpeta, duracion_segmento):
 
     #print(f"Transcripción de {ruta_audio}:\n{texto_extraido}\n")
     trasncripcion.append({
-        "providencia" : nombre_archivo,
+        "providencia" : codigo,
         "tipo": tipo,
         "texto_audio": texto_extraido,
         "anio": anio

@@ -6,6 +6,7 @@ uri = "neo4j+s://2ab2a2fc.databases.neo4j.io"  # Cambia esto por tu URI
 user = "neo4j"
 password = "N60xwacXrv3nytMqDRy--YkQHDonDOVXT_UCuzJJvhE"
 
+
 # Crear instancia del controlador de Neo4j
 driver = GraphDatabase.driver(uri, auth=(user, password))
 

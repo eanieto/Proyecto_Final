@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Relatoria</h1>
+        <h1 class="text-center">Búsqueda en MongoDB</h1>
         <form method="POST" class="mt-4">
             <div class="mb-3">
                 <label for="providencia" class="form-label">Nombre de la providencia</label>
@@ -44,6 +44,8 @@
                             <p><strong>Tipo:</strong> {{ result.tipo or 'No disponible' }}</p>
                             <p><strong>Año:</strong> {{ result.anio or 'No disponible' }}</p>
                             <p><strong>Texto:</strong> {{ result.texto_audio or 'No disponible' }}</p>
+                            <!-- Botón para consultar en Neo4j -->
+                            <a href="{{ url_for('providencia_detail', providencia=result.providencia) }}" class="btn btn-info">Consultar en Neo4j</a>
                         </div>
                     </div>
                 </div>
